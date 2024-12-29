@@ -4,8 +4,8 @@ import {
   ofType,
   // Effect
 } from '@ngrx/effects';
-import { decrement, increment } from './counter.actions';
-import { Observable, tap, withLatestFrom } from 'rxjs';
+import { decrement, increment, init, set } from './counter.actions';
+import { Observable, switchMap, tap, withLatestFrom, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectCount } from './counter.selectors';
@@ -16,6 +16,26 @@ export class CounterEffect {
     private actions$: Actions,
     private store: Store<{ counter: number }>
   ) {}
+  loadCount = createEffect(() =>
+    this.actions$.pipe(
+      ofType(init),
+      switchMap(() => {
+        const storedCounter = localStorage.getItem('counter');
+        if (storedCounter) {
+          return of(
+            set({
+              value: +storedCounter,
+            })
+          );
+        }
+        return of(
+          set({
+            value: 0,
+          })
+        );
+      })
+    )
+  );
 
   //   Cach 1: version older than
   //   @Effect({ dispatch: false })

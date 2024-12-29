@@ -1,5 +1,11 @@
 import { Action, createAction, props } from '@ngrx/store';
-
+export const init = createAction('[Counter] init');
+export const set = createAction(
+  '[Counter] set',
+  props<{
+    value: number;
+  }>()
+);
 //Cach 1
 export const increment = createAction(
   '[Counter] increment',
