@@ -6,7 +6,7 @@ const initialState = 0;
 // Cach 1
 export const counterReducer = createReducer(
   initialState,
-  on(increment, (state) => state + 1),
+  on(increment, (state, action) => state + action.value),
   on(decrement, (state) => state - 1)
 );
 
