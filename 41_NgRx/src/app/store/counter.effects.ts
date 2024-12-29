@@ -5,12 +5,17 @@ import {
   // Effect
 } from '@ngrx/effects';
 import { decrement, increment } from './counter.actions';
-import { tap } from 'rxjs';
+import { Observable, tap, withLatestFrom } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { selectCount } from './counter.selectors';
 
 @Injectable()
 export class CounterEffect {
-  constructor(private actions$: Actions) {}
+  constructor(
+    private actions$: Actions,
+    private store: Store<{ counter: number }>
+  ) {}
 
   //   Cach 1: version older than
   //   @Effect({ dispatch: false })
@@ -26,10 +31,11 @@ export class CounterEffect {
     () =>
       this.actions$.pipe(
         ofType(increment, decrement),
-        tap((action: { type: string; value: number }) => [
-          console.log(action),
-          localStorage.setItem('counter', action.value.toString()),
-        ])
+        withLatestFrom(this.store.select(selectCount)),
+        tap(([action, count]) => {
+          console.log(action);
+          localStorage.setItem('counter', count.toString());
+        })
       ),
     {
       dispatch: false, // To not dispatch the actions to the reducer
