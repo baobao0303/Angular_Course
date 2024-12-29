@@ -1,4 +1,4 @@
-import { increment } from './counter.actions';
+import { decrement, increment } from './counter.actions';
 import { createReducer, on } from '@ngrx/store';
 
 const initialState = 0;
@@ -6,7 +6,8 @@ const initialState = 0;
 // Cach 1
 export const counterReducer = createReducer(
   initialState,
-  on(increment, (state) => state + 1)
+  on(increment, (state) => state + 1),
+  on(decrement, (state) => state - 1)
 );
 
 // An Alternative Way Of Creating Reducers
